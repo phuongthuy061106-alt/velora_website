@@ -1,0 +1,30 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import type { Lang } from "@/lib/hotel";
+import { dict } from "@/lib/i18n";
+import BookingFlow from "@/components/BookingFlow";
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: Lang }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return { title: dict(lang).book.title };
+}
+
+export default async function BookPage({ params }: { params: Promise<{ lang: Lang }> }) {
+  const { lang } = await params;
+  const t = dict(lang);
+  return (
+    <div className="page-top" style={{ paddingBottom: "clamp(72px, 10vw, 140px)" }}>
+      <div className="wrap" style={{ maxWidth: 1100 }}>
+        <h1 className="display h1" style={{ marginBottom: 16 }}>
+          {t.book.title}
+        </h1>
+        <p className="muted" style={{ margin: "0 0 clamp(32px, 5vw, 56px)", maxWidth: "60ch" }}>
+          {t.demo}
+        </p>
+        <Suspense>
+          <BookingFlow lang={lang} />
+        </Suspense>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,236 @@
+/* Dùng chung cho các trang nội dung: dịch vụ, thông tin, đặt phòng, tra cứu */
+.intro {
+  margin-top: 24px;
+}
+
+.feature {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: clamp(28px, 5vw, 96px);
+  align-items: center;
+  margin-top: clamp(64px, 9vw, 140px);
+}
+.flip .featureMedia {
+  order: 2;
+}
+.flip {
+  grid-template-columns: 5fr 6fr;
+}
+.featureMedia {
+  aspect-ratio: 4 / 3;
+}
+.tall {
+  aspect-ratio: 4 / 5;
+}
+.featureBody {
+  display: grid;
+  gap: 16px;
+}
+.featureBody p {
+  margin: 0;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+.featureBody h3 {
+  margin-top: 16px;
+}
+
+.band {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(80px, 10vw, 160px);
+}
+.bandMedia {
+  position: absolute;
+  inset: -12% 0;
+  opacity: 0.22;
+  transform: translate3d(0, var(--py, 0px), 0);
+}
+.bandMedia img {
+  object-fit: cover;
+}
+.bandGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 120px);
+}
+.bandGrid h2 {
+  margin-bottom: 20px;
+}
+.bandGrid p {
+  margin: -8px 0 20px;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(24px, 5vw, 96px);
+  align-items: start;
+}
+.twoCol h2 {
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+}
+.after {
+  margin: 16px 0 0;
+}
+
+.policy {
+  display: grid;
+  gap: clamp(56px, 7vw, 112px);
+  margin-top: clamp(56px, 8vw, 112px);
+  padding-bottom: clamp(80px, 10vw, 160px);
+}
+.bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.bullets li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.contact {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.pair {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pair dt {
+  color: var(--ink-soft);
+}
+.pair dd {
+  margin: 0;
+}
+.ordered {
+  counter-reset: rule;
+}
+.ordered li {
+  counter-increment: rule;
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+}
+.ordered li::before {
+  content: counter(rule) ".";
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--pistachio-deep);
+  line-height: 1.4;
+}
+.before {
+  margin: 0 0 10px;
+}
+.subhead {
+  margin: 32px 0 10px;
+}
+
+@media (max-width: 900px) {
+  .feature,
+  .flip,
+  .bandGrid,
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+  .flip .featureMedia {
+    order: 0;
+  }
+  .tall {
+    aspect-ratio: 4 / 3;
+  }
+}
+@media (max-width: 480px) {
+  .pair {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+/* Trang dịch vụ */
+.index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.index a {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.index a:hover {
+  border-color: var(--wood);
+  background: rgba(122, 75, 45, 0.06);
+}
+.svcBlock {
+  padding-top: clamp(40px, 5vw, 64px);
+  border-top: 1px solid var(--line);
+}
+.svcHead {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.svcHead p {
+  margin: 0;
+}
+.svcImg {
+  aspect-ratio: 4 / 3;
+  margin-top: 12px;
+}
+.svcCta {
+  margin-top: 24px;
+}
+
+/* Mục miễn phí cho khách lưu trú */
+.freeBand > :global(.wrap) > p {
+  margin: 16px 0 0;
+}
+.freeGrid {
+  list-style: none;
+  margin: clamp(36px, 5vw, 64px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
+}
+.freeItem {
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-light);
+}
+.freeItem p {
+  margin: 0;
+}
+.freeImg {
+  aspect-ratio: 4 / 3;
+  background: #2a352c;
+}
+.freeExtra {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+@media (max-width: 1000px) {
+  .freeGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .freeGrid {
+    grid-template-columns: 1fr;
+  }
+}

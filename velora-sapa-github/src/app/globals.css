@@ -1,0 +1,525 @@
+/* Velora Hotel Sa Pa — hệ thống thiết kế
+   Theo tài liệu "Thông tin": hiện đại pha nét núi rừng Tây Bắc, tông xanh pistachio và gỗ. */
+:root {
+  --mist: #eff1ea; /* nền giấy xanh rất nhạt */
+  --fog: #f8f9f4; /* bề mặt nổi: thẻ, form */
+  --ink: #1d2620; /* xanh rừng đậm thay cho đen */
+  --ink-soft: #4c564d;
+  --forest: #2e3b2a;
+  --pistachio-deep: #5d6f3f; /* nhấn trên nền sáng, đạt tương phản 4.5:1 */
+  --pistachio: #b7c68c; /* nhấn trên nền tối */
+  --wood: #7a4b2d; /* gỗ óc chó: nút đặt phòng */
+  --wood-deep: #5c361f;
+  --line: rgba(29, 38, 32, 0.15);
+  --line-light: rgba(239, 241, 234, 0.2);
+  --ok: #3c6b3a;
+  --warn: #8a5a12;
+
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
+  --font-body: var(--font-bevn), system-ui, sans-serif;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --max: 1360px;
+  --header-h: 84px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--mist);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--wood);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--forest);
+  color: var(--fog);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--fog);
+  transform: translateY(-150%);
+  transition: transform 0.2s;
+}
+.skip:focus {
+  transform: none;
+}
+
+/* ---------- Typography ---------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.04;
+  margin: 0;
+  text-wrap: balance;
+}
+.h1 {
+  font-size: clamp(2.8rem, 6.4vw, 5.8rem);
+}
+.h2 {
+  font-size: clamp(2.1rem, 4vw, 3.7rem);
+}
+/* Tiêu đề trang và tiêu đề mục: viết hoa đứng như các khách sạn boutique */
+.h1,
+.h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1.08;
+}
+.caps .accent {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.55rem, 2.2vw, 2rem);
+  line-height: 1.15;
+  margin: 0;
+}
+/* Đoạn mở đầu: chữ có chân cỡ lớn, như một trang sách */
+.lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: 34em;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Tiêu đề viết hoa đứng + dòng nghiêng màu nhấn */
+.caps .caps-main {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1.08;
+}
+.caps .accent {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.12;
+  color: var(--wood);
+}
+.dark .caps .accent {
+  color: var(--pistachio);
+}
+
+/* Nhãn nhỏ viết hoa giãn chữ, có gạch phía trước */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 28px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--pistachio-deep);
+}
+.eyebrow::before {
+  content: "";
+  width: 44px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+.dark .eyebrow {
+  color: var(--pistachio);
+}
+
+/* Câu trích dẫn */
+.quote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  line-height: 1.3;
+  color: var(--wood);
+  text-wrap: balance;
+}
+.dark .quote {
+  color: var(--pistachio);
+}
+.muted {
+  color: var(--ink-soft);
+}
+.small {
+  font-size: 0.9rem;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  padding-block: clamp(72px, 11vw, 160px);
+}
+.section--tight {
+  padding-block: clamp(48px, 7vw, 96px);
+}
+.dark {
+  background: var(--ink);
+  color: var(--mist);
+}
+.dark .lead {
+  color: var(--mist);
+}
+.dark .muted {
+  color: rgba(239, 241, 234, 0.72);
+}
+.page-top {
+  padding-top: calc(var(--header-h) + clamp(48px, 8vw, 120px));
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  --bg: var(--ink);
+  --fg: var(--fog);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 14px 30px;
+  border: 1px solid var(--bg);
+  border-radius: 1px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--fg);
+  transform: translateY(101%);
+  border-radius: inherit;
+  transition: transform 0.5s var(--ease-out);
+}
+@media (hover: hover) {
+  .btn:hover {
+    color: var(--bg);
+  }
+  .btn:hover::before {
+    transform: none;
+  }
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn--book {
+  --bg: var(--wood);
+  --fg: var(--fog);
+}
+.btn--ghost {
+  --bg: transparent;
+  --fg: var(--ink);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.btn--ghost::before {
+  background: var(--ink);
+}
+@media (hover: hover) {
+  .btn--ghost:hover {
+    color: var(--fog);
+    border-color: var(--ink);
+  }
+}
+.btn--light {
+  --bg: var(--fog);
+  --fg: var(--ink);
+}
+.btn--block {
+  width: 100%;
+}
+
+.link {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.5s var(--ease-out);
+}
+@media (hover: hover) {
+  .link:hover {
+    background-size: 0 1px;
+    background-position: 100% 100%;
+  }
+}
+
+/* ---------- Hiệu ứng theo vị trí cuộn (chỉ khi JS bật và không giảm chuyển động) ----------
+   --p do SmoothScroll tính từng khung hình: 0 = chưa vào màn hình, 1 = đã hiện xong. */
+html.js [data-reveal="text"] {
+  opacity: var(--p, 0);
+  transform: translate3d(0, calc((1 - var(--p, 0)) * 56px), 0);
+  will-change: opacity, transform;
+}
+/* Ảnh: mở dần từ dưới lên và thu nhỏ về kích thước thật theo nhịp cuộn */
+html.js [data-reveal="img"] > * {
+  clip-path: inset(calc((1 - var(--p, 0)) * 100%) 0 0 0);
+  transform: scale(calc(1.2 - var(--p, 0) * 0.2));
+  will-change: clip-path, transform;
+}
+
+.media {
+  position: relative;
+  overflow: hidden;
+  background: #d6dacd;
+}
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Forms ---------- */
+.field {
+  display: grid;
+  gap: 6px;
+}
+.field label,
+.field .label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.field .hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.82rem;
+}
+.input {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--fog);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input:hover {
+  border-color: rgba(29, 38, 32, 0.32);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgba(46, 59, 42, 0.18);
+}
+.input[aria-invalid="true"] {
+  border-color: var(--wood);
+}
+textarea.input {
+  min-height: 96px;
+  resize: vertical;
+}
+.err {
+  color: var(--wood);
+  font-size: 0.86rem;
+  margin: 0;
+}
+.notice {
+  padding: 14px 16px;
+  border-radius: 2px;
+  background: rgba(201, 162, 75, 0.16);
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  color: #4d3a10;
+  font-size: 0.94rem;
+}
+.notice--error {
+  background: rgba(155, 45, 34, 0.08);
+  border-color: rgba(155, 45, 34, 0.35);
+  color: var(--wood-deep);
+}
+.notice--ok {
+  background: rgba(60, 107, 58, 0.1);
+  border-color: rgba(60, 107, 58, 0.35);
+  color: #24421f;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--fog);
+  min-height: 50px;
+}
+.stepper button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  border-radius: 2px;
+}
+.stepper button:hover:not(:disabled) {
+  background: rgba(29, 38, 32, 0.06);
+}
+.stepper button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.stepper output {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ---------- Tables of prices ---------- */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.rows .r-name {
+  max-width: 34ch;
+}
+.rows .r-detail {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.rows .r-price {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.dark .rows,
+.dark .rows li {
+  border-color: var(--line-light);
+}
+
+/* ---------- Route transition ---------- */
+.route {
+  animation: route-in 0.7s var(--ease-out) both;
+}
+@keyframes route-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.hint {
+  font-weight: 400;
+  color: var(--ink-soft);
+  opacity: 0.85;
+}

@@ -1,0 +1,64 @@
+.form {
+  display: grid;
+  gap: 18px;
+}
+.dates,
+.guests {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ages {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+.hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ink-soft);
+}
+.nights {
+  color: var(--pistachio-deep);
+  font-weight: 600;
+}
+.submit {
+  justify-self: start;
+}
+
+.dark :global(.field label),
+.dark :global(.field .label),
+.dark .hint {
+  color: rgba(231, 235, 229, 0.78);
+}
+.dark .nights {
+  color: var(--pistachio);
+}
+.dark :global(.input),
+.dark :global(.stepper) {
+  background: rgba(231, 235, 229, 0.06);
+  border-color: var(--line-light);
+  color: var(--mist);
+  color-scheme: dark;
+}
+.dark :global(.input option) {
+  color: var(--ink);
+}
+.dark :global(.stepper button:hover:not(:disabled)) {
+  background: rgba(231, 235, 229, 0.08);
+}
+.dark :global(.err) {
+  color: #f0a79d;
+}
+
+@media (max-width: 520px) {
+  .dates {
+    grid-template-columns: 1fr;
+  }
+  .submit {
+    width: 100%;
+  }
+}

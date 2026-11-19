@@ -1,0 +1,130 @@
+.dialog {
+  width: min(980px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--fog);
+  color: var(--ink);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.dialog[open] {
+  animation: open 0.45s var(--ease-out);
+}
+.dialog::backdrop {
+  background: rgba(29, 38, 32, 0.55);
+  backdrop-filter: blur(3px);
+}
+@keyframes open {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.img {
+  min-height: 100%;
+  aspect-ratio: auto;
+}
+.body {
+  padding: clamp(24px, 4vw, 44px);
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+.body p {
+  margin: 0;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.head h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+.close {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: none;
+  cursor: pointer;
+}
+.close:hover {
+  border-color: var(--ink);
+}
+.specs {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.specs div {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.94rem;
+}
+.specs dt,
+.label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  align-self: center;
+}
+.specs dd {
+  margin: 0;
+}
+.label {
+  margin-bottom: 8px !important;
+}
+.amen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  font-size: 0.94rem;
+}
+.amen li::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--pistachio-deep);
+  vertical-align: middle;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .img {
+    aspect-ratio: 3 / 2;
+  }
+  .amen {
+    grid-template-columns: 1fr;
+  }
+  .specs div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
