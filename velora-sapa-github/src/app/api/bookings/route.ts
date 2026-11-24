@@ -44,11 +44,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (error || !data || !data.success) {
-      return NextResponse.json(
-        { error: "INVALID_INPUT", message: data?.error || error?.message },
-        { status: 400 }
-      );
-    }
+  const errMsg = data?.error || error?.message || "Lỗi tạo đơn";
+  console.error("Lỗi Supabase:", errMsg);
+  // Trả về thẳng thông báo của Supabase để giao diện hiển thị cho bạn đọc
+  return NextResponse.json({ error: errMsg, message: errMsg }, { status: 400 });
+}
 
     const bookingQuote = quote(rooms, checkIn, checkOut, extras);
     const paidNow = paymentMethod !== "PAY_LATER";
