@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServiceSupabase } from "@/lib/supabase";
 import { getRoomMapping } from "@/lib/room-mapper";
 import { quote } from "@/lib/pricing";
+import { roomById } from "@/lib/hotel";
 import type { NewBooking } from "@/lib/booking-api";
 
 export async function POST(req: NextRequest) {
@@ -13,13 +14,22 @@ export async function POST(req: NextRequest) {
 
     const roomCountMap = new Map<number, number>();
     let totalAdults = 0;
-    let totalKids = 0;
+    let freeKids = 0;
+    let extraKids = 0;
 
+    // Phân loại trẻ em: trẻ trong sức chứa tiêu chuẩn (miễn phí) và trẻ phụ thu (+100k)
     for (const r of rooms) {
       const typeId = slugToId[r.roomTypeId] || 1;
       roomCountMap.set(typeId, (roomCountMap.get(typeId) || 0) + 1);
       totalAdults += r.guests.adults;
-      totalKids += r.guests.children;
+
+      const roomDef = roomById(r.roomTypeId);
+      const standardKids = roomDef ? roomDef.maxChildren : 1;
+
+      // Số trẻ miễn phí trong tiêu chuẩn
+      freeKids += Math.min(r.guests.children, standardKids);
+      // Số trẻ vượt tiêu chuẩn (phụ thu 100k/đêm)
+      extraKids += Math.max(0, r.guests.children - standardKids);
     }
 
     const p_chi_tiet = Array.from(roomCountMap.entries()).map(([ma_loai_phong, so_luong]) => ({
@@ -29,6 +39,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = getServiceSupabase();
 
+    // 1. Gọi hàm api_tao_don tạo đơn trong DB
     const { data, error } = await supabase.rpc("api_tao_don", {
       p_ten_khach_hang: fullName.trim(),
       p_so_dien_thoai: phone.trim(),
@@ -38,31 +49,28 @@ export async function POST(req: NextRequest) {
       p_ngay_di: checkOut,
       p_chi_tiet,
       p_so_nguoi_lon: totalAdults,
-      p_so_tre_duoi_6: 0,
-      p_so_tre_6_11: totalKids,
+      p_so_tre_duoi_6: freeKids,   // Trẻ em miễn phí
+      p_so_tre_6_11: extraKids,    // Trẻ em phụ thu 100k
       p_ghi_chu: note?.trim() || null,
     });
 
     if (error || !data || !data.success) {
-  const errMsg = data?.error || error?.message || "Lỗi tạo đơn";
-  console.error("Lỗi Supabase:", errMsg);
-  // Trả về thẳng thông báo của Supabase để giao diện hiển thị cho bạn đọc
-  return NextResponse.json({ error: errMsg, message: errMsg }, { status: 400 });
-}
+      const errMsg = data?.error || error?.message || "Lỗi tạo đơn";
+      return NextResponse.json({ error: errMsg, message: errMsg }, { status: 400 });
+    }
 
+    // 2. Tính báo giá chuẩn xác theo quy chế khách sạn
     const bookingQuote = quote(rooms, checkIn, checkOut, extras);
     const paidNow = paymentMethod !== "PAY_LATER";
 
+    // 3. Đồng bộ lại đúng tổng tiền phòng và cọc 50% vào CSDL Supabase
     await supabase
       .from("don_dat_phong")
       .update({
+        tong_tien_phong: bookingQuote.total,
+        tien_coc: paidNow ? bookingQuote.deposit : 0,
         extras: extras || {},
-        ...(paidNow
-          ? {
-              trang_thai: "DA_COC",
-              tien_coc: data.tien_coc_yeu_cau_50_phan_tram || bookingQuote.deposit,
-            }
-          : {}),
+        trang_thai: paidNow ? "DA_COC" : "CHO_XAC_NHAN",
       })
       .eq("ma_don_hien_thi", data.ma_don);
 
@@ -79,13 +87,13 @@ export async function POST(req: NextRequest) {
       note,
       payment: {
         method: paymentMethod,
-        depositPaid: paidNow ? Number(data.tien_coc_yeu_cau_50_phan_tram) : 0,
+        depositPaid: paidNow ? bookingQuote.deposit : 0,
       },
       quote: bookingQuote,
       createdAt: new Date().toISOString(),
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Đầu vào không hợp lệ";
-    return NextResponse.json({ error: "INVALID_INPUT", message }, { status: 400 });
+    return NextResponse.json({ error: message, message }, { status: 400 });
   }
 }
