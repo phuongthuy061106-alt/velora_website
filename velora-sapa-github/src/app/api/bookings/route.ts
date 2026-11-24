@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
 
     const { slugToId } = await getRoomMapping();
 
-    // Gom số lượng phòng theo từng loại
     const roomCountMap = new Map<number, number>();
     let totalAdults = 0;
     let totalKids = 0;
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    // 1. Gọi hàm api_tao_don tạo đơn trong DB
     const { data, error } = await supabase.rpc("api_tao_don", {
       p_ten_khach_hang: fullName.trim(),
       p_so_dien_thoai: phone.trim(),
@@ -52,19 +50,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Tính báo giá hoàn chỉnh gồm cả dịch vụ extras
     const bookingQuote = quote(rooms, checkIn, checkOut, extras);
     const paidNow = paymentMethod !== "PAY_LATER";
 
-    // 3. Cập nhật extras và trạng thái cọc vào đơn vừa tạo
     await supabase
       .from("don_dat_phong")
       .update({
         extras: extras || {},
-        ...(paidNow ? {
-          trang_thai: "DA_COC",
-          tien_coc: data.tien_coc_yeu_cau_50_phan_tram || bookingQuote.deposit,
-        } : {}),
+        ...(paidNow
+          ? {
+              trang_thai: "DA_COC",
+              tien_coc: data.tien_coc_yeu_cau_50_phan_tram || bookingQuote.deposit,
+            }
+          : {}),
       })
       .eq("ma_don_hien_thi", data.ma_don);
 
@@ -86,7 +84,8 @@ export async function POST(req: NextRequest) {
       quote: bookingQuote,
       createdAt: new Date().toISOString(),
     });
-  } catch (err: any) {
-    return NextResponse.json({ error: "INVALID_INPUT", message: err.message }, { status: 400 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Đầu vào không hợp lệ";
+    return NextResponse.json({ error: "INVALID_INPUT", message }, { status: 400 });
   }
 }

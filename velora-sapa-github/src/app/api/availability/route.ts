@@ -3,6 +3,12 @@ import { getServiceSupabase } from "@/lib/supabase";
 import { getRoomMapping } from "@/lib/room-mapper";
 import { stayHasPeak } from "@/lib/pricing";
 
+type RoomItem = {
+  ma_loai_phong: number;
+  so_phong_trong: number;
+  gia_moi_dem: number | string;
+};
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const checkIn = searchParams.get("checkIn");
@@ -15,7 +21,6 @@ export async function GET(req: NextRequest) {
   const supabase = getServiceSupabase();
   const { idToSlug } = await getRoomMapping();
 
-  // Gọi api_kiem_tra_phong_va_gia với p_chi_tiet = null để lấy danh sách phòng trống
   const { data, error } = await supabase.rpc("api_kiem_tra_phong_va_gia", {
     p_ngay_den: checkIn,
     p_ngay_di: checkOut,
@@ -26,7 +31,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "NETWORK", message: error?.message }, { status: 500 });
   }
 
-  const rooms = (data.danh_sach_hang_phong || []).map((r: any) => ({
+  const roomList = (data.danh_sach_hang_phong || []) as RoomItem[];
+  const rooms = roomList.map((r) => ({
     roomTypeId: idToSlug[r.ma_loai_phong] || "superior",
     available: r.so_phong_trong,
     pricePerNight: Number(r.gia_moi_dem),

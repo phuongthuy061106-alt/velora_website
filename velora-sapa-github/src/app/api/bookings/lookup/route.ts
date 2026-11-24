@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServiceSupabase } from "@/lib/supabase";
 import { quote } from "@/lib/pricing";
 
+type ChiTietPhongItem = {
+  ten_loai_phong?: string;
+  so_nguoi_lon: number;
+  so_tre_duoi_6: number;
+  so_tre_6_11: number;
+  so_giuong_phu: number;
+};
+
 export async function POST(req: NextRequest) {
   const { code, phone } = await req.json();
   const supabase = getServiceSupabase();
 
-  // 1. Gọi RPC tra cứu đơn
   const { data, error } = await supabase.rpc("api_tra_cuu_don", {
     p_ma_don_hien_thi: code.trim(),
     p_so_dien_thoai: phone.trim(),
@@ -16,7 +23,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "NOT_FOUND", message: data?.error }, { status: 404 });
   }
 
-  // 2. Lấy thêm thông tin extras đã lưu trong bảng don_dat_phong
   const { data: donExtra } = await supabase
     .from("don_dat_phong")
     .select("extras")
@@ -25,8 +31,8 @@ export async function POST(req: NextRequest) {
 
   const extras = donExtra?.extras || { services: [], early: "none", late: "none" };
 
-  // Map các dòng phòng
-  const rooms = (data.chi_tiet_phong || []).map((ct: any) => {
+  const rawRooms = (data.chi_tiet_phong || []) as ChiTietPhongItem[];
+  const rooms = rawRooms.map((ct) => {
     let slug = "superior";
     const name = (ct.ten_loai_phong || "").toLowerCase();
     if (name.includes("deluxe")) slug = "deluxe-mountain-view";
