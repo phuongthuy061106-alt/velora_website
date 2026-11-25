@@ -22,11 +22,6 @@ export default function CozeChat() {
             componentProps: {
               title: "Velora AI Concierge",
             },
-            auth: {
-              type: "token",
-              token: "pat_dCbcQeELt8rf2JYxvVDKaCWStBWR6bTnlHTg5X8PZ6pDgi65UamyugF8PL7FpDwm",
-              onRefreshToken: () => "pat_dCbcQeELt8rf2JYxvVDKaCWStBWR6bTnlHTg5X8PZ6pDgi65UamyugF8PL7FpDwm",
-            },
           });
         }
       }}
