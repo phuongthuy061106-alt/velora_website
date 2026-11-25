@@ -2,22 +2,18 @@
 
 import Script from "next/script";
 
-declare global {
-  interface Window {
-    CozeWebSDK?: {
-      WebChatClient: new (options: Record<string, unknown>) => unknown;
-    };
-  }
-}
-
 export default function CozeChat() {
   return (
     <Script
       src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/oversea/index.js"
       strategy="afterInteractive"
       onLoad={() => {
-        if (window.CozeWebSDK) {
-          new window.CozeWebSDK.WebChatClient({
+        const coze = (window as Record<string, unknown>).CozeWebSDK as
+          | { WebChatClient: new (options: unknown) => void }
+          | undefined;
+
+        if (coze?.WebChatClient) {
+          new coze.WebChatClient({
             config: {
               bot_id: "7706818166441213957",
             },
