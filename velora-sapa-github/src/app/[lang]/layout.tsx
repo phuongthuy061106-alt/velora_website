@@ -7,6 +7,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ChatWidget from "@/components/ChatWidget";
+import CozeChat from "@/components/CozeChat";
 
 // Tiêu đề: Cormorant Garamond (serif cổ điển, nét thanh). Nội dung: Be Vietnam Pro (do người Việt thiết kế, dấu chuẩn).
 const cormorant = Cormorant_Garamond({
@@ -67,6 +68,7 @@ export default async function LangLayout({
         <main id="main">{children}</main>
         <SiteFooter lang={lang} />
         <ChatWidget lang={lang} />
+        <CozeChat />
       </body>
     </html>
   );
