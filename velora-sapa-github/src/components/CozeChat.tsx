@@ -8,12 +8,14 @@ export default function CozeChat() {
       src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/oversea/index.js"
       strategy="afterInteractive"
       onLoad={() => {
-        const coze = (window as Record<string, unknown>).CozeWebSDK as
-          | { WebChatClient: new (options: unknown) => void }
-          | undefined;
+        const win = window as unknown as {
+          CozeWebSDK?: {
+            WebChatClient: new (options: Record<string, unknown>) => unknown;
+          };
+        };
 
-        if (coze?.WebChatClient) {
-          new coze.WebChatClient({
+        if (win.CozeWebSDK?.WebChatClient) {
+          new win.CozeWebSDK.WebChatClient({
             config: {
               bot_id: "7706818166441213957",
             },
