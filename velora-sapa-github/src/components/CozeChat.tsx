@@ -1,30 +1,34 @@
 "use client";
 
-import Script from "next/script";
-
 export default function CozeChat() {
-  return (
-    <Script
-      src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/oversea/index.js"
-      strategy="afterInteractive"
-      onLoad={() => {
-        const win = window as unknown as {
-          CozeWebSDK?: {
-            WebChatClient: new (options: Record<string, unknown>) => unknown;
-          };
-        };
+  const agentUrl = "[https://www.coze.com/store/agent/7706818166441213957?bot_id=true](https://www.coze.com/store/agent/7706818166441213957?bot_id=true)";
 
-        if (win.CozeWebSDK?.WebChatClient) {
-          new win.CozeWebSDK.WebChatClient({
-            config: {
-              bot_id: "7706818166441213957",
-            },
-            componentProps: {
-              title: "Velora AI Concierge",
-            },
-          });
-        }
+  return (
+    <a
+      href={agentUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with Velora AI Concierge"
+      style={{
+        position: "fixed",
+        bottom: "24px",
+        right: "24px",
+        zIndex: 9999,
+        backgroundColor: "#1c1917",
+        color: "#ffffff",
+        padding: "14px 20px",
+        borderRadius: "9999px",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+        fontWeight: 600,
+        fontSize: "14px",
+        textDecoration: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
       }}
-    />
+    >
+      <span>💬</span>
+      <span>Velora AI Concierge</span>
+    </a>
   );
 }
