@@ -1,7 +1,8 @@
 "use client";
 
 export default function CozeChat() {
-  const agentUrl = "[https://www.coze.com/store/agent/7706818166441213957?bot_id=true](https://www.coze.com/store/agent/7706818166441213957?bot_id=true)";
+  // ✅ Đường link sạch chuẩn xác
+  const agentUrl = "https://www.coze.com/store/agent/7706818166441213957?bot_id=true";
 
   return (
     <a
@@ -25,6 +26,7 @@ export default function CozeChat() {
         display: "flex",
         alignItems: "center",
         gap: "8px",
+        cursor: "pointer",
       }}
     >
       <span>💬</span>
